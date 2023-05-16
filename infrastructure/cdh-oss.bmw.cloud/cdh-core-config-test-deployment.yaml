@@ -1,0 +1,138 @@
+---
+account:
+  instances_per_purpose:
+    test:
+      account_instances:
+        prod-global-test-495903930033:
+          id: '495903930033'
+          environment: prod
+          partition: aws
+          hub: global
+        dev-global-test-132457401385:
+          id: '132457401385'
+          environment: dev
+          partition: aws
+          hub: global
+        dev-global-test-978627400017:
+          id: '978627400017'
+          environment: dev
+          partition: aws
+          hub: global
+    api:
+      account_instances:
+        prod-global-api-837647200361:
+          id: '837647200361'
+          environment: prod
+          partition: aws
+        dev-global-api-061186287821:
+          id: '061186287821'
+          environment: dev
+          partition: aws
+    security:
+      account_instances:
+        prod-global-security-837647200361:
+          id: '837647200361'
+          environment: prod
+          partition: aws
+          hub: global
+    resources:
+      account_instances:
+        prod-global-resources-837647200361:
+          id: '837647200361'
+          hub: global
+          stage: prod
+          partition: aws
+          environment: prod
+        dev-global-resources-061186287821:
+          id: '061186287821'
+          hub: global
+          stage: prod
+          partition: aws
+          environment: dev
+    iam:
+      account_instances:
+        prod-global-iam-837647200361:
+          id: '837647200361'
+          partition: aws
+          environment: prod
+        dev-global-iam-404200864179:
+          id: '404200864179'
+          partition: aws
+          environment: dev
+    portal:
+      account_instances:
+        prod-837647200361:
+          id: '837647200361'
+          partition: aws
+          environment: prod
+        dev-016141820572:
+          id: '016141820572'
+          partition: aws
+          environment: dev
+affiliation:
+  instances:
+    cdh:
+      value: cdh
+      friendly_name: CDH
+      access_management: true
+business_object:
+  instances:
+    hr:
+      value: humres
+      friendly_name: Human Resources
+    bi:
+      value: bi
+      friendly_name: Business Intelligence
+dataset_purpose:
+  instances:
+    recreation:
+      value: recreation
+      friendly_name: Recreation
+    making_money:
+      value: making-money
+      friendly_name: Making Money
+dataset_external_link_type:
+  instances:
+    docs:
+      value: docs
+      friendly_name: Documentation
+    code_repo:
+      value: code-repo
+      friendly_name: Code Repository
+environment:
+  instances:
+    prod:
+      value: prod
+      friendly_name: Production
+      domain:
+        aws: api.cdh-oss.bmw.cloud
+      stages_with_extended_metrics: [int, prod]
+    dev:
+      value: dev
+      friendly_name: Development
+      is_test_environment: true
+      domain:
+        aws: api-dev.cdh-oss.bmw.cloud
+hub:
+  instances:
+    GLOBAL:
+      value: global
+      environments: [dev, prod]
+      regions: [eu-west-1, us-east-1]
+partition:
+  default_value: aws
+  instances:
+    aws:
+      value: aws
+      friendly_name: The global AWS partition
+      default_hub: global
+      default_region: eu-west-1
+      regions: [eu-west-1, us-east-1]
+region:
+  instances:
+    eu_west_1:
+      value: eu-west-1
+      friendly_name: EU (Ireland)
+    us_east_1:
+      value: us-east-1
+      friendly_name: US-East-1 (N. Virginia)

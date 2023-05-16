@@ -1,0 +1,17 @@
+{
+    "path": "/accounts/{accountId}",
+    "method": "PUT",
+    "defaultPathParameters": {
+        "accountId": "123456789012"
+    },
+    "body": {
+        "affiliation": "cdh",
+        "adminRoles": ["CDHDevOps"],
+        "businessObjects": ["humres"],
+        "friendlyName": "TestAccount",
+        "group": "test-group",
+        "layers": [],
+        "stages": ["dev","int"],
+        "type": "provider"
+    }
+}

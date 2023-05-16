@@ -1,0 +1,98 @@
+---
+account:
+  instances_per_purpose:
+    test:
+      account_instances:
+        test-061186287821:
+          id: '061186287821'
+          hub: mars
+          partition: aws
+          environment: staging
+    api:
+      account_instances:
+        api-061186287821:
+          id: '061186287821'
+          partition: aws
+          environment: staging
+    security:
+      account_instances:
+        security-837647200361:
+          id: '837647200361'
+          hub: mars
+          partition: aws
+          environment: staging
+    resources:
+      account_instances:
+        resources-061186287821:
+          id: '061186287821'
+          hub: mars
+          stage: prod
+          partition: aws
+          environment: staging
+    iam:
+      account_instances:
+        iam-404200864179:
+          id: '404200864179'
+          partition: aws
+          environment: staging
+    portal:
+      account_instances:
+        portal-016141820572:
+          id: '016141820572'
+          partition: aws
+          environment: staging
+affiliation:
+  instances:
+    internal:
+      value: internal
+      friendly_name: internal
+      access_management: true
+business_object:
+  instances:
+    fin:
+      value: finance
+      friendly_name: Finance
+    bi:
+      value: bi
+      friendly_name: Business Intelligence
+dataset_purpose:
+  instances:
+    internal_analysis:
+      value: internal-analysis
+      friendly_name: Internal Analysis
+dataset_external_link_type:
+  instances:
+    wiki:
+      value: wiki
+      friendly_name: Wikipedia
+environment:
+  instances:
+    staging:
+      value: staging
+      friendly_name: Staging
+      is_test_environment: true
+      domain:
+        aws: api-dev.cdh-oss.bmw.cloud
+hub:
+  instances:
+    MARS:
+      value: mars
+      environments: [staging]
+      regions: [eu-west-1, us-east-1]
+partition:
+  default_value: aws
+  instances:
+    aws:
+      value: aws
+      friendly_name: The global AWS partition
+      default_hub: mars
+      default_region: eu-west-1
+      regions: [eu-west-1, us-east-1]
+region:
+  instances:
+    eu_west_1:
+      value: eu-west-1
+      friendly_name: EU (Ireland)
+    us_east_1:
+      value: us-east-1
+      friendly_name: US-East-1 (N. Virginia)

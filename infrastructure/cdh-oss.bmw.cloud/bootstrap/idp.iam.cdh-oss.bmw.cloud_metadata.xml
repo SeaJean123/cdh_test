@@ -1,0 +1,32 @@
+<md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" validUntil="2026-04-04T11:25:54.031422+00:00" entityID="idp.iam.cdh-oss.bmw.cloud" ID="96edc08c-1acf-4ba8-bc5e-8caaeafbb0d7">
+      <md:IDPSSODescriptor WantAuthnRequestsSigned="true" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+        <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
+      <md:KeyDescriptor use="signing">
+          <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+            <ds:X509Data>
+              <ds:X509Certificate>
+              MIIDeDCCAmCgAwIBAgIUQM7zlrQgKFO0suMSGuTMRZj+BfcwDQYJKoZIhvcNAQELBQAwWjELMAkGA1UEBhMCREUxCzAJBgNVBAgMAkJWMQwwCgYDVQQHDANNVUMxDDAKBgNVBAoMA0JNVzEiMCAGA1UEAwwZaWRwLmlhbS5jZGgtb3NzLmJtdy5jbG91ZDAeFw0yMzA0MDUxMTI0MzNaFw0yNjA0MDQxMTI0MzNaMFoxCzAJBgNVBAYTAkRFMQswCQYDVQQIDAJCVjEMMAoGA1UEBwwDTVVDMQwwCgYDVQQKDANCTVcxIjAgBgNVBAMMGWlkcC5pYW0uY2RoLW9zcy5ibXcuY2xvdWQwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCwx9o1tTgWD8JI4S0B9kb1YjroTIQOHE/NZjGxHGs+NTq/1xSgbSwsYF40hHZPjNh0n7UYemyVxRFDyQJsASOJa72LZaD4nqwBi6Z9CarHc8ozWP6z4xhHSPVvvrbwC+XwhHpyEfYlPjthgx0z/dwAMNrEx3gs1f6BgGXgvadWwoImOKLJ4HTUG87TTmNTwBsjJ4eYiH2g0gYzCHcKfKYrOgvz4g2K/3zPu/nEkgxgiLcOZTzrDlU/n9A3U6mE9m7oKLZbcaJE1eelOqUPnEBzC/ZjDn+OWRYg8biYgGFFUyDVnpPyrvjVClR2qYaQhW7Mp+LQzQs99GsI/9/ozSN/AgMBAAGjNjA0MCQGA1UdEQQdMBuCGWlkcC5pYW0uY2RoLW9zcy5ibXcuY2xvdWQwDAYDVR0TAQH/BAIwADANBgkqhkiG9w0BAQsFAAOCAQEAF2Usfjkg56MWCDCrAT6Zq4EazoZAPpymXrZx6dHkhDZmuMRrvmHqm8SpL2Pri0J9GbGRr+PozPMBlvlRa18GM0Xt6qK1+vjb3D8KQvIjq+cMDxs5nbB5kodslkE4FRmSKab3kGBsceH+wbBUDvdOQXHbtdXWYDlwSxBc8Cu4hfANdvJLPK+t7/kO7hASla6JZL8XN+gOopstczcXxNhudTjz7/CjAdFyMfQ/Fu64pO/cH6HjaEuYEEf/znmeNulbipjFCrg3O+yEhN4rvOWkZlyvT4pkjvSgfVj2r/sdaZBA4Xaf0hs0W/QDtZrFzsFGpXjlyY7R10+rizBCTddoaA==
+              </ds:X509Certificate>
+            </ds:X509Data>
+          </ds:KeyInfo>
+        </md:KeyDescriptor><md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://authentication.iam.cdh-oss.bmw.cloud/login"/><md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://authentication.iam.cdh-oss.bmw.cloud/login"/></md:IDPSSODescriptor>
+    <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><ds:Reference URI="#96edc08c-1acf-4ba8-bc5e-8caaeafbb0d7"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>QbtQjOB3xyHmKlbVD+ME7uzlb5os0H72qk3P/BvghUw=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue>SZRS9qk30SNHF9LI4Lw6xbB8Ak54ZePeBX5QPhNxa0iGPTuyZdJtnFwhQ5+yu8E2ZjaQeFmA/gBdhejV1kBiadYkhs1Mmu8xjbY/s0MD8Tx53ZRHwlOILejFRoAonsrDd/+Xl+ID8SShQNXRrNL0ea01F1r9f3D5nYh8j6s4BFho7gyCodhyWllOTCsVJm3uykndhyvjlEG85Y/8bGf6SDv4MlXayU/9fYI9pgtBhCre7NCMp5c512cY5puSsfR+4u3YWf8xvYtx/w+euL4QdADI6Th6oyDXXjByGrzPi3L0onDyXHaEcUk+d6NRHdYuuHXRl2Ci13qqDR/e89FNqg==</ds:SignatureValue><ds:KeyInfo><ds:X509Data><ds:X509Certificate>MIIDeDCCAmCgAwIBAgIUQM7zlrQgKFO0suMSGuTMRZj+BfcwDQYJKoZIhvcNAQEL
+BQAwWjELMAkGA1UEBhMCREUxCzAJBgNVBAgMAkJWMQwwCgYDVQQHDANNVUMxDDAK
+BgNVBAoMA0JNVzEiMCAGA1UEAwwZaWRwLmlhbS5jZGgtb3NzLmJtdy5jbG91ZDAe
+Fw0yMzA0MDUxMTI0MzNaFw0yNjA0MDQxMTI0MzNaMFoxCzAJBgNVBAYTAkRFMQsw
+CQYDVQQIDAJCVjEMMAoGA1UEBwwDTVVDMQwwCgYDVQQKDANCTVcxIjAgBgNVBAMM
+GWlkcC5pYW0uY2RoLW9zcy5ibXcuY2xvdWQwggEiMA0GCSqGSIb3DQEBAQUAA4IB
+DwAwggEKAoIBAQCwx9o1tTgWD8JI4S0B9kb1YjroTIQOHE/NZjGxHGs+NTq/1xSg
+bSwsYF40hHZPjNh0n7UYemyVxRFDyQJsASOJa72LZaD4nqwBi6Z9CarHc8ozWP6z
+4xhHSPVvvrbwC+XwhHpyEfYlPjthgx0z/dwAMNrEx3gs1f6BgGXgvadWwoImOKLJ
+4HTUG87TTmNTwBsjJ4eYiH2g0gYzCHcKfKYrOgvz4g2K/3zPu/nEkgxgiLcOZTzr
+DlU/n9A3U6mE9m7oKLZbcaJE1eelOqUPnEBzC/ZjDn+OWRYg8biYgGFFUyDVnpPy
+rvjVClR2qYaQhW7Mp+LQzQs99GsI/9/ozSN/AgMBAAGjNjA0MCQGA1UdEQQdMBuC
+GWlkcC5pYW0uY2RoLW9zcy5ibXcuY2xvdWQwDAYDVR0TAQH/BAIwADANBgkqhkiG
+9w0BAQsFAAOCAQEAF2Usfjkg56MWCDCrAT6Zq4EazoZAPpymXrZx6dHkhDZmuMRr
+vmHqm8SpL2Pri0J9GbGRr+PozPMBlvlRa18GM0Xt6qK1+vjb3D8KQvIjq+cMDxs5
+nbB5kodslkE4FRmSKab3kGBsceH+wbBUDvdOQXHbtdXWYDlwSxBc8Cu4hfANdvJL
+PK+t7/kO7hASla6JZL8XN+gOopstczcXxNhudTjz7/CjAdFyMfQ/Fu64pO/cH6Hj
+aEuYEEf/znmeNulbipjFCrg3O+yEhN4rvOWkZlyvT4pkjvSgfVj2r/sdaZBA4Xaf
+0hs0W/QDtZrFzsFGpXjlyY7R10+rizBCTddoaA==
+</ds:X509Certificate></ds:X509Data></ds:KeyInfo></ds:Signature></md:EntityDescriptor>

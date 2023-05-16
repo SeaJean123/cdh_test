@@ -1,0 +1,8 @@
+{
+  "path": "/{hub}/datasets/{datasetId}",
+  "method": "DELETE",
+  "defaultPathParameters": {
+    "hub": "global",
+    "datasetId": "bi_test_src"
+  }
+}

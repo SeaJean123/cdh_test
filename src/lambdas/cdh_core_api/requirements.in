@@ -1,0 +1,9 @@
+-c ../../requirements.txt
+cryptography
+openapi-spec-validator >= 0.3.3   # licence is broken in 0.3.2
+marshmallow
+marshmallow-dataclass >= 7.5.0,<=8.5.3 # Remove upper bound once memory issue is fixed CDHX-22483. Keep lower bound since we rely on being able to overwrite TYPE_MAPPING
+marshmallow-enum
+marshmallow-jsonschema == 0.9.0   # The 'allow_none' feature introduced in 47418df6f breaks our OpenAPI spec.
+pynamodb
+pynamodb-attributes

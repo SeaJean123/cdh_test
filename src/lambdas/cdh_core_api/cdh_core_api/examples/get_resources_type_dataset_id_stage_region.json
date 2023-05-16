@@ -1,0 +1,11 @@
+{
+  "path": "/{hub}/resources/{type}/{datasetId}/{stage}/{region}",
+  "method": "GET",
+  "defaultPathParameters": {
+    "hub": "global",
+    "type": "s3",
+    "datasetId": "bi_test_src",
+    "stage": "prod",
+    "region": "eu-central-1"
+  }
+}

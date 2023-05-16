@@ -1,0 +1,7 @@
+{
+  "path": "/resources/s3",
+  "method": "GET",
+  "defaultQueryParameters": {
+    "bucketName": "cdh-itdata-example-dev-0000"
+  }
+}

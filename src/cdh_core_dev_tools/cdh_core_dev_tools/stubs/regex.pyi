@@ -1,0 +1,3 @@
+from re import Pattern
+
+def compile(pattern_string: str) -> Pattern[str]: ...

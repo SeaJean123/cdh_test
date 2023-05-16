@@ -1,0 +1,10 @@
+{
+  "path": "/{hub}/resources/s3/{datasetId}/{stage}/{region}/stats",
+  "method": "GET",
+  "defaultPathParameters": {
+    "hub": "global",
+    "datasetId": "bi_test_src",
+    "stage": "prod",
+    "region": "eu-central-1"
+  }
+}

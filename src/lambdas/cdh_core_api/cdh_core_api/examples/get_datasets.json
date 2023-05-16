@@ -1,0 +1,7 @@
+{
+  "path": "/{hub}/datasets",
+  "method": "GET",
+  "defaultPathParameters": {
+    "hub":"global"
+  }
+}

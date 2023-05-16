@@ -1,0 +1,10 @@
+-r cdh_core/requirements.txt
+-r lambdas/cdh_billing/requirements.in
+-r lambdas/cdh_core_api/requirements.in
+-r lambdas/example_lambda/requirements.in
+-r lambdas/notify_teams/requirements.in
+-r lambdas/logs_subscription/requirements.in
+-r lambdas/s3_attribute_extractor/requirements.in
+-r lambdas/glue_housekeeping/requirements.in
+
+pip>=22.0.4

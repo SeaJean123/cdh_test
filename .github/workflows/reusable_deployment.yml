@@ -1,0 +1,107 @@
+---
+name: Reusable deployment workflow
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      prefix:
+        required: false
+        default: ''
+        type: string
+      purposes:
+        required: true
+        type: string
+    outputs:
+      job_status:
+        value: ${{ jobs.deployment.outputs.job_status }}
+
+jobs:
+  list-purpose-account-tuples:
+    runs-on: [self-hosted, ubuntu-latest]
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - uses: syphar/restore-virtualenv@v1
+        id: cache-virtualenv
+        with:
+          custom_cache_key_element: ${{ github.sha }}
+
+      - name: Set Config file env var
+        run: echo "CDH_CORE_CONFIG_FILE_PATH=${GITHUB_WORKSPACE}/infrastructure/cdh-oss.bmw.cloud/cdh-core-config-test-deployment.yaml" >> $GITHUB_ENV
+
+      - name: Retrieve account-purpose tuples
+        id: set-matrix
+        run: |
+          accounts=$(python infrastructure/bin/get_purpose_account_tuples.py)
+          echo "matrix=$accounts" >> $GITHUB_OUTPUT
+        env:
+          ENVIRONMENT: ${{ inputs.environment }}
+          PURPOSES: ${{ inputs.purposes }}
+
+  deployment:
+    needs: list-purpose-account-tuples
+    runs-on: [self-hosted, ubuntu-latest]
+    env:
+      TF_IN_AUTOMATION: true
+      TF_INPUT: false
+    permissions:
+      id-token: write
+      contents: read
+    outputs:
+      job_status: ${{ job.status }}
+    strategy:
+      fail-fast: false
+      matrix:
+        purpose-accounts: ${{ fromJson(needs.list-purpose-account-tuples.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          version: v0.10.2
+
+      - uses: syphar/restore-virtualenv@v1
+        id: cache-virtualenv
+        with:
+          custom_cache_key_element: ${{ github.sha }}
+
+      - name: Set Config file env var
+        run: echo "CDH_CORE_CONFIG_FILE_PATH=${GITHUB_WORKSPACE}/infrastructure/cdh-oss.bmw.cloud/cdh-core-config-test-deployment.yaml" >> $GITHUB_ENV
+
+      - name: Configure AWS credentials
+        id: aws_credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16  # https://github.com/aws-actions/configure-aws-credentials/issues/489
+        with:
+          role-to-assume: arn:aws:iam::${{ matrix.purpose-accounts.account }}:role/cdh-deployer
+          aws-region: eu-west-1
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.4.5
+
+      - name: Terraform init
+        run: terraform init -backend-config=vars/${{ matrix.purpose-accounts.account }}/backend-config.hcl -backend-config="key=${{ inputs.prefix }}${{
+          matrix.purpose-accounts.purpose }}/${{matrix.purpose-accounts.account }}"
+        working-directory: ./infrastructure/cdh-oss.bmw.cloud/${{ matrix.purpose-accounts.purpose }}
+
+      - name: Terraform apply
+        run: terraform apply -var-file="vars/${{ matrix.purpose-accounts.account }}/variables.tfvars" ${{ inputs.prefix != '' && format('-var="resource_name_prefix={0}"',
+          inputs.prefix) || ''}} ${{ inputs.prefix != '' && matrix.purpose-accounts.purpose == 'api' && '-var="integrated_deployment=0"' || '' }} -auto-approve
+        working-directory: ./infrastructure/cdh-oss.bmw.cloud/${{ matrix.purpose-accounts.purpose }}

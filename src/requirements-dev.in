@@ -1,0 +1,28 @@
+-c requirements.txt
+
+-e file:src/cdh_core_dev_tools
+-e file:src/cdh_applications
+
+asserts
+aws-lambda-typing
+black==23.3.0  # like pre-commit hook
+boto3-stubs[athena,ce,cloudformation,cloudwatch,dynamodb,events,glue,iam,kms,lakeformation,lambda,logs,ram,s3,ses,sns,sqs,ssm,stepfunctions]
+docker
+flake8==6.0.0  # like pre-commit hook
+flake8-print
+freezegun
+import-linter
+liccheck
+moto==4.1.4  # pinned due to bug in mock_athena: https://github.com/getmoto/moto/issues/6211
+mypy==v1.2.0  # like pre-commit hook
+pre-commit
+pyparsing
+pytest
+pytest-cov
+pytest-xdist
+requests-mock
+types-freezegun
+types-PyYAML
+types-requests
+types-setuptools
+Jinja2

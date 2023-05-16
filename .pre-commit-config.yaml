@@ -1,0 +1,148 @@
+---
+default_language_version:
+  python: python3.9
+repos:
+  - repo: git@github.com:bmw-cdh/disallowed-words-check.git
+    rev: v0.0.5
+    hooks:
+      - id: disallowed-words-check
+        args:
+          - --check-git-branch-name
+          - --generate-exclusions
+          - --non-interactive
+  - repo: local
+    hooks:
+      - id: import-linter
+        name: Validate python imports
+        entry: src/cdh_core_dev_tools/cdh_core_dev_tools/pre_commit/import_linter.py
+        language: python
+        types: [python]
+        pass_filenames: false
+        args: [--folders, cdh_applications, cdh_core, cdh_core_dev_tools, lambdas, --no-cache] # remove no-cache flag once https://github.com/seddonym/grimp/issues/106 is solved
+        additional_dependencies: [import-linter]
+      - id: oss-license-check
+        name: OSS License Check
+        entry: src/cdh_core_dev_tools/cdh_core_dev_tools/pre_commit/liccheck_wrapper.py
+        language: script
+        pass_filenames: true
+        files: ^src\/requirements(-dev)?\.txt$
+      - id: commit-message-check
+        name: Ensure commit message is signed off
+        entry: src/cdh_core_dev_tools/cdh_core_dev_tools/pre_commit/check_for_signed_off_message.py
+        language: script
+        stages: [commit-msg]
+        always_run: true
+      - id: format-commit-message
+        name: Ensure commit message contains issue or ticket number
+        entry: src/cdh_core_dev_tools/cdh_core_dev_tools/pre_commit/format_commit_message.py
+        language: script
+        stages: [prepare-commit-msg]
+        always_run: true
+      - id: rm-terraform-directories
+        name: Remove Terraform Directories
+        entry: src/cdh_core_dev_tools/cdh_core_dev_tools/pre_commit/rm_terraform_directories.sh
+        pass_filenames: false
+        language: system
+      - id: check-terraform-tf-and-openapi-spec-up-to-date
+        name: Ensure terraform generated files and openapi spec are up-to-date.
+        entry: bash -c "CDH_CORE_CONFIG_FILE_PATH=infrastructure/cdh-oss.bmw.cloud/cdh-core-config-test-deployment.yaml" && pytest
+        language: system
+        pass_filenames: false
+        args: [infrastructure/bin/validate_cdh_deployment_test.py]
+  - repo: https://github.com/psf/black
+    rev: 23.3.0
+    hooks:
+      - id: black
+        args: [-l 120]
+  - repo: https://github.com/pycqa/flake8
+    rev: 6.0.0
+    hooks:
+      - id: flake8
+        additional_dependencies:
+          - flake8-print
+          - flake8-absolute-import
+#          - flake8-eradicate # incompatible: https://github.com/wemake-services/flake8-eradicate/issues/269
+          - flake8-bugbear
+          - flake8-pytest
+          - flake8-docstrings
+  - repo: https://github.com/asottile/reorder_python_imports
+    rev: v3.9.0
+    hooks:
+      - id: reorder-python-imports
+        args:
+          - --application-directories=src
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.2.0
+    hooks:
+      - id: mypy
+        args: [--show-absolute-path]
+        exclude: setup.py
+        additional_dependencies:
+          - asserts
+          - aws-lambda-typing
+          - boto3-stubs[athena,ce,cloudformation,cloudwatch,dynamodb,events,glue,iam,kms,lakeformation,lambda,logs,ram,s3,ses,sns,sqs,ssm,stepfunctions]
+          - cryptography
+          - marshmallow_dataclass
+          - pynamodb
+          - pynamodb_attributes
+          - pytest
+          - requests-mock
+          - types-freezegun
+          - types-python-dateutil
+          - types-PyYAML
+          - types-requests
+          - types-setuptools
+          - Jinja2
+          - orjson
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.77.2
+    hooks:
+      - id: terraform_fmt
+      - id: terraform_validate
+        args:
+          - --envs=TF_DATA_DIR=/tmp/terraform_validate
+          - --init-args=-backend=false
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: end-of-file-fixer
+      - id: check-merge-conflict
+      - id: trailing-whitespace
+  - repo: https://github.com/jumanjihouse/pre-commit-hook-yamlfmt
+    rev: 0.2.2
+    hooks:
+      - id: yamlfmt
+        args: [--offset, '2', --mapping, '2', --sequence, '4']
+        exclude: openapi.yml
+  - repo: https://github.com/pre-commit/pygrep-hooks
+    rev: v1.10.0
+    hooks:
+      - id: python-check-blanket-noqa
+      - id: python-check-mock-methods
+      - id: python-no-eval
+      - id: python-no-log-warn
+      - id: python-use-type-annotations
+  - repo: https://github.com/pycqa/pylint
+    rev: v3.0.0a6
+    hooks:
+      - id: pylint
+        name: pylint
+        exclude: (\/test_\S*|_test|conftest)\.py$
+      - id: pylint
+        name: pylint-test
+        files: (\/test_\S*|_test|conftest)\.py$
+        args:
+          - -d duplicate-code
+          - -d attribute-defined-outside-init
+          - -d too-many-arguments
+          - -d too-many-locals
+          - -d too-many-public-methods
+          - -d broad-exception-raised
+  - repo: https://github.com/Lucas-C/pre-commit-hooks
+    rev: v1.5.1
+    hooks:
+      - id: insert-license
+        files: \.(py|sh|tf|hcl|tfvars|jinja)$
+        args:
+          - --license-filepath
+          - license_header.txt

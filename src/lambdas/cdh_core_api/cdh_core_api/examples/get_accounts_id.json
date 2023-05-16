@@ -1,0 +1,7 @@
+{
+  "path": "/accounts/{accountId}",
+  "method": "GET",
+  "defaultPathParameters": {
+    "accountId":"123456789012"
+  }
+}

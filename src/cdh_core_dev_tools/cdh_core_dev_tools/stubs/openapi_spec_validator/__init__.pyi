@@ -1,0 +1,3 @@
+from typing import Any
+
+def openapi_v30_spec_validator(x: Any) -> None: ...
