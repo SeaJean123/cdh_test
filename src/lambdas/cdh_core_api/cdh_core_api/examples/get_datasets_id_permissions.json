@@ -1,0 +1,8 @@
+{
+  "path": "/{hub}/datasets/{datasetId}/permissions",
+  "method": "GET",
+  "defaultPathParameters": {
+    "hub": "global",
+    "datasetId": "bi_test_src"
+  }
+}

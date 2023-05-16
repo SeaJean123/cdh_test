@@ -1,0 +1,12 @@
+{
+  "path": "/{hub}/resources/s3",
+  "method": "POST",
+  "defaultPathParameters": {
+    "hub": "global"
+  },
+  "body": {
+    "datasetId": "bi_test_src",
+    "stage": "prod",
+    "region": "eu-central-1"
+  }
+}

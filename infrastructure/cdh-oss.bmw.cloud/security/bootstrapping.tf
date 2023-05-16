@@ -1,0 +1,66 @@
+# Copyright (C) 2022, Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+locals {
+  name = "${var.deployment_prefix}cdh-bootstrapping-terraform-states-${data.aws_caller_identity.current.account_id}"
+}
+
+moved {
+  from = aws_s3_bucket.state_bucket
+  to   = module.state_bucket.aws_s3_bucket.bucket
+}
+
+moved {
+  from = aws_s3_bucket_public_access_block.state_bucket
+  to   = module.state_bucket.aws_s3_bucket_public_access_block.bucket
+}
+
+moved {
+  from = aws_s3_bucket_server_side_encryption_configuration.state_bucket
+  to   = module.state_bucket.aws_s3_bucket_server_side_encryption_configuration.bucket
+}
+
+moved {
+  from = aws_s3_bucket_versioning.state_bucket
+  to   = module.state_bucket.aws_s3_bucket_versioning.bucket
+}
+
+module "state_bucket" {
+  providers = {
+    aws = aws.primary
+  }
+
+  source                   = "../../modules/technical/s3"
+  kms_key_id               = aws_kms_key.internal_eu_west_1[data.aws_caller_identity.current.account_id].arn
+  name                     = local.name
+  default_lifecycle_config = true
+  versioning               = "Enabled"
+}
+
+resource "aws_dynamodb_table" "state_lock_table" {
+  name         = local.name
+  provider     = aws.primary
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "LockID"
+
+  attribute {
+    name = "LockID"
+    type = "S"
+  }
+
+  server_side_encryption {
+    enabled     = true
+    kms_key_arn = aws_kms_key.internal_eu_west_1[data.aws_caller_identity.current.account_id].arn
+  }
+}

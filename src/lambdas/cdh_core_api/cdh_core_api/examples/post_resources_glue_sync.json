@@ -1,0 +1,12 @@
+{
+  "path": "/{hub}/resources/glue-sync",
+  "method": "POST",
+  "defaultPathParameters": {
+    "hub": "global"
+  },
+  "body": {
+    "datasetId": "bi_test_src",
+    "stage": "prod",
+    "region": "eu-central-1"
+  }
+}

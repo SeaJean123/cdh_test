@@ -1,0 +1,9 @@
+from typing import TypeVar, Callable, Optional, Any
+
+AnyFunc = TypeVar("AnyFunc", bound=Callable[..., Any])
+AnyOtherFunc = TypeVar("AnyOtherFunc", bound=Callable[..., Any])
+
+# deliberately does not implement the use "without parentheses"
+def lru_cache(maxsize: Optional[int] = None, typed: bool = False) -> Callable[[AnyFunc], AnyFunc]: ...
+def wraps(func: AnyFunc) -> Callable[[AnyOtherFunc], AnyOtherFunc]: ...
+def partial(func: AnyFunc, **kwargs: Any) -> AnyFunc: ...

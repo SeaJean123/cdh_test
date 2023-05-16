@@ -1,0 +1,3 @@
+-c ../../requirements.txt
+
+# This package requires the cdh_core package which has to be installed manually, for more details see: README.md

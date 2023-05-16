@@ -1,0 +1,16 @@
+{
+  "path": "/{hub}/datasets/{datasetId}",
+  "method": "PUT",
+  "defaultPathParameters": {
+    "hub":"global",
+    "datasetId": "bi_tests_src"
+  },
+  "body": {
+    "confidentiality": "strictly-confidential",
+    "containsPii": true,
+    "description": "test description",
+    "friendlyName": "Some test",
+    "engineers": [{"id": "cdh-all@example.com", "idp": "some"}],
+    "tags": {}
+  }
+}

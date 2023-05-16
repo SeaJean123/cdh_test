@@ -1,0 +1,7 @@
+{
+  "path": "/{hub}/businessObjects",
+  "method": "GET",
+  "defaultPathParameters": {
+    "hub":"global"
+  }
+}

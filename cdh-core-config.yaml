@@ -1,0 +1,128 @@
+---
+account:
+  instances_per_purpose:
+    test:
+      account_instances:
+        staging-global-012345678912:
+          id: '012345678912'
+          partition: aws
+          environment: staging
+          hub: global
+    api:
+      account_instances:
+        staging-111111111111:
+          id: '111111111111'
+          environment: staging
+          partition: aws
+        prod-333333333333:
+          id: '333333333333'
+          environment: prod
+          partition: aws
+    security:
+      account_instances:
+        prod-global-987654321098:
+          id: '987654321098'
+          environment: prod
+          partition: aws
+          hub: global
+    resources:
+      account_instances:
+        prod-prod-global-111122223333:
+          id: '111122223333'
+          hub: global
+          stage: prod
+          partition: aws
+          environment: prod
+        staging-dev-global-333322221111:
+          id: '333322221111'
+          hub: global
+          stage: dev
+          partition: aws
+          environment: staging
+        staging-dev-mars-123412341234:
+          id: '123412341234'
+          hub: mars
+          stage: dev
+          partition: aws
+          environment: staging
+    iam:
+      account_instances:
+        staging-111111111111:
+          id: '111111111111'
+          partition: aws
+          environment: staging
+        prod-333333333333:
+          id: '333333333333'
+          partition: aws
+          environment: prod
+affiliation:
+  instances:
+    cdh:
+      value: cdh
+      friendly_name: CDH
+      access_management: true
+    external:
+      value: external
+      friendly_name: External
+      access_management: true
+business_object:
+  instances:
+    hr:
+      value: humres
+      friendly_name: Human Resources
+    bi:
+      value: bi
+      friendly_name: Business Intelligence
+dataset_purpose:
+  instances:
+    productive_systems:
+      value: productive-systems
+      friendly_name: Productive Systems
+    internal_analysis:
+      value: internal-analysis
+      friendly_name: Internal Analysis
+dataset_external_link_type:
+  instances:
+    docs:
+      value: docs
+      friendly_name: Documentation
+    code:
+      value: code
+      friendly_name: Code Repository
+environment:
+  instances:
+    staging:
+      value: staging
+      friendly_name: Staging
+      is_test_environment: true
+      domain:
+        aws: staging.cdh.example.com
+    prod:
+      value: prod
+      friendly_name: Production
+      domain:
+        aws: cdh.example.com
+hub:
+  instances:
+    GLOBAL:
+      value: global
+      environments: [staging, prod]
+      regions: [eu-central-1]
+    MARS:
+      value: mars
+      environments: [staging]
+      regions: [eu-central-1]
+partition:
+  default_value: aws
+  instances:
+    aws:
+      value: aws
+      friendly_name: The global AWS partition
+      default_hub: global
+      default_region: eu-central-1
+      regions: [eu-central-1]
+region:
+  instances:
+    eu_central_1:
+      value: eu-central-1
+      friendly_name: EU (Frankfurt)

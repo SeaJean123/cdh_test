@@ -1,0 +1,11 @@
+{
+  "path": "/{hub}/resources/glue-sync/{datasetId}/{stage}/{region}/filter-packages/{packageId}",
+  "method": "GET",
+  "defaultPathParameters": {
+    "hub": "global",
+    "datasetId": "bi_test_src",
+    "stage": "prod",
+    "region": "eu-central-1",
+    "packageId": "54a698a4-eeea-4956-b0ed-7b3bcaa6b5f8"
+  }
+}

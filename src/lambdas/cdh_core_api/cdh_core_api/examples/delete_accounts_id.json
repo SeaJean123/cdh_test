@@ -1,0 +1,7 @@
+{
+  "path": "/accounts/{accountId}",
+  "method": "DELETE",
+  "defaultPathParameters": {
+    "accountId": "123456789012"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "path": "/{hub}/datasets/{datasetId}/permissions",
+  "method": "DELETE",
+  "defaultPathParameters": {
+    "hub": "global",
+    "datasetId": "bi_tests_src"
+  },
+  "body": {
+    "accountId": "123456789012",
+    "stage": "dev",
+    "region": "eu-central-1"
+  }
+}

@@ -1,0 +1,7 @@
+asserts
+botocore
+import-linter
+moto
+pip-tools
+pip-check-reqs
+pytest

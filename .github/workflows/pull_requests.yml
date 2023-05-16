@@ -1,0 +1,95 @@
+---
+name: Pull Requests
+
+on:
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  create_virtualenv:
+    runs-on: [self-hosted, ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - uses: syphar/restore-virtualenv@v1
+        id: cache-virtualenv
+        with:
+          custom_cache_key_element: ${{ github.sha }}
+
+      - uses: syphar/restore-pip-download-cache@v1
+        if: steps.cache-virtualenv.outputs.cache-hit != 'true'
+
+      - name: Install dependencies
+        run: |
+          python -m  pip install -r src/requirements-dev.txt -r src/requirements.txt
+          python -m pip install src/cdh_core
+          python -m pip install src/lambdas/cdh_core_api
+        if: steps.cache-virtualenv.outputs.cache-hit != 'true'
+
+  pre-commit:
+    needs: create_virtualenv
+    if: needs.create_virtualenv.result == 'success'
+    runs-on: [self-hosted, ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_CDH_MACHINE_USER }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - uses: syphar/restore-virtualenv@v1
+        id: cache-virtualenv
+        with:
+          custom_cache_key_element: ${{ github.sha }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.4.5
+
+      - name: Cache pre-commit
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pre-commit
+          key: ${{ runner.os }}-pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}
+
+      - uses: pre-commit/action@v3.0.0
+        env:
+          SKIP: disallowed-words-check  # Only run locally before commits as stopword list may not be available
+
+  source-test:
+    needs: create_virtualenv
+    if: needs.create_virtualenv.result == 'success'
+    runs-on: [self-hosted, ubuntu-latest]
+    strategy:
+      matrix:
+        package_path: [cdh_applications, cdh_core, cdh_core_dev_tools, lambdas/example_lambda, lambdas/cdh_core_api, lambdas/notify_teams, lambdas/logs_subscription,
+          lambdas/cdh_billing, lambdas/s3_attribute_extractor, lambdas/glue_housekeeping]
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - uses: syphar/restore-virtualenv@v1
+        id: cache-virtualenv
+        with:
+          custom_cache_key_element: ${{ github.sha }}
+
+      - name: Run pytest
+        run: pytest -n auto -v "src/${{ matrix.package_path }}"
+        env:
+          CDH_CORE_CONFIG_FILE_PATH: cdh-core-config.yaml
+          LOG_TIMEOUT: 10

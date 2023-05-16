@@ -1,0 +1,23 @@
+{
+    "path": "/{hub}/datasets",
+    "method": "POST",
+    "defaultPathParameters": {
+        "hub":"global"
+    },
+    "body": {
+        "name": "testvisibility",
+        "businessObject": "bi",
+        "containsPii": false,
+        "confidentiality": "strictly-confidential",
+        "description": "test data",
+        "engineers": [{"id": "cdh-all@example.com", "idp": "example"}],
+        "externalLinks": [{"type": "docs", "url": "https://mydocurl.com"}],
+        "friendlyName": "functional test test data",
+        "hubVisibility": ["global"],
+        "layer": "src",
+        "supportGroup": "some:group",
+        "tags": {
+            "mytesttag": "mytesttagvalue"
+        }
+    }
+}

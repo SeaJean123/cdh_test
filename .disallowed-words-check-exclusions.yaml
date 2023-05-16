@@ -1,0 +1,134 @@
+---
+## check_disallowed_words exclusions
+# specify disallowed words that are allowed by file path, line number(s) or wildcard "*"
+#
+## example:
+#
+# path/to/file.py:
+#   - 101
+#   - 222
+#
+# path/ignore_completely.txt: "*"
+#
+
+# this file
+.disallowed-words-check-exclusions.yaml: '*'
+
+# license header
+license_header.txt:
+  - 1
+
+# setup files
+setup.cfg: '*'
+src/cdh_applications/setup.py: '*'
+src/cdh_core/setup.py: '*'
+src/cdh_core_dev_tools/setup.py: '*'
+src/lambdas/cdh_billing/setup.py: '*'
+src/lambdas/cdh_core_api/setup.py: '*'
+
+# terraform lock files
+infrastructure/cdh-oss.bmw.cloud/api/.terraform.lock.hcl: '*'
+infrastructure/cdh-oss.bmw.cloud/bootstrap/.terraform.lock.hcl: '*'
+infrastructure/cdh-oss.bmw.cloud/resources/.terraform.lock.hcl: '*'
+infrastructure/cdh-oss.bmw.cloud/security/.terraform.lock.hcl: '*'
+infrastructure/cdh-oss.bmw.cloud/test/.terraform.lock.hcl: '*'
+
+# github workflows
+.github/workflows/deployment.yml:
+  - 77
+  - 146
+  - 163
+
+
+.github/workflows/destroy_prefix.yml:
+  - 64
+  - 104
+  - 126
+  - 131
+
+.github/workflows/reusable_cleanup.yml:
+  - 41
+  - 77
+
+.github/workflows/reusable_deployment.yml:
+  - 40
+  - 85
+  - 102
+  - 107
+
+.github/workflows/reusable_functional_tests.yml:
+  - 50
+
+# idp metadata
+infrastructure/cdh-oss.bmw.cloud/bootstrap/idp.iam.cdh-oss.bmw.cloud_metadata.xml: '*'
+
+# individual exceptions
+.pre-commit-config.yaml:
+  - 5
+  - 48
+
+Readme.md:
+  - 18
+  - 25
+  - 102
+  - 131
+  - 140
+  - 163
+  - 165
+  - 216
+  - 217
+  - 221
+  - 223
+  - 237
+
+infrastructure/bin/create-cdh-compatibility-test-config.yaml:
+  - 75
+
+infrastructure/bin/lock_terraform_provider.py:
+  - 67
+
+infrastructure/bin/render.py:
+  - 24
+  - 69
+
+infrastructure/bin/validate_cdh_deployment_test.py:
+  - 31
+  - 48
+
+infrastructure/bin/validate_create_cdh_compatibility_test.py:
+  - 53
+
+infrastructure/cdh-oss.bmw.cloud/api/vars/061186287821/variables.tfvars:
+  - 17
+  - 18
+
+infrastructure/cdh-oss.bmw.cloud/api/vars/837647200361/variables.tfvars:
+  - 17
+  - 18
+
+infrastructure/cdh-oss.bmw.cloud/api/vars/variables.tfvars.jinja:
+  - 18
+  - 19
+  - 21
+  - 22
+
+infrastructure/cdh-oss.bmw.cloud/bootstrap/bootstrap.py:
+  - 145
+
+infrastructure/cdh-oss.bmw.cloud/bootstrap/Readme.md:
+  - 6
+  - 11
+  - 17
+
+infrastructure/cdh-oss.bmw.cloud/cdh-core-config-test-deployment.yaml:
+  - 108
+  - 115
+
+infrastructure/cdh-oss.bmw.cloud/security/main.jinja:
+  - 29
+
+infrastructure/cdh-oss.bmw.cloud/security/main.tf:
+  - 29
+
+infrastructure/modules/logs-subscription/main.tf:
+  - 65

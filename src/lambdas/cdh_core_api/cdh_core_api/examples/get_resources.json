@@ -1,0 +1,7 @@
+{
+  "path": "/{hub}/resources",
+  "method": "GET",
+  "defaultPathParameters": {
+    "hub": "global"
+  }
+}

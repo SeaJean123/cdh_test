@@ -1,0 +1,7 @@
+{
+  "path": "/datasets",
+  "method": "GET",
+  "defaultQueryParameters": {
+    "ids":  ["bi_test_src", "hr_test_pre"]
+  }
+}

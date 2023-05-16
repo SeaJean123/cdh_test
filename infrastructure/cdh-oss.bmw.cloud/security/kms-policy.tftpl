@@ -1,0 +1,83 @@
+{
+    "Version": "2012-10-17",
+    "Id": "key-policy",
+    "Statement": [
+        {
+            "Sid": "AllowEverythingForOnlyCDHSecurityAccount",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::${security_account}:root"
+            },
+            "Action": "kms:*",
+            "Resource": "*"
+        },
+        {
+            "Sid": "AllowKeyUsage",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:${key_user_partition}:iam::${key_user_account}:root"
+            },
+            "Action": [
+                "kms:Encrypt",
+                "kms:Decrypt",
+                "kms:ReEncrypt*",
+                "kms:GenerateDataKey*",
+                "kms:DescribeKey"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "AllowKeyUsageAWSServices",
+            "Effect": "Allow",
+            "Principal": {
+                "Service": [
+                    "sqs.amazonaws.com",
+                    "sns.amazonaws.com",
+                    "cloudwatch.amazonaws.com",
+                    "s3.amazonaws.com",
+                    "events.amazonaws.com"
+                ]
+            },
+            "Action": [
+                "kms:Decrypt",
+                "kms:GenerateDataKey*"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "AllowCloudwatchEncryptLogs",
+            "Effect": "Allow",
+            "Principal": {
+                "Service": [
+                    "${logs_service_list}"
+                ]
+            },
+            "Action": [
+                "kms:Encrypt*",
+                "kms:Decrypt*",
+                "kms:ReEncrypt*",
+                "kms:GenerateDataKey*",
+                "kms:Describe*"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "AllowAttachmentPersistentResources",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:${key_user_partition}:iam::${key_user_account}:root"
+            },
+            "Action": [
+                "kms:CreateGrant",
+                "kms:ListGrants",
+                "kms:RevokeGrant"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "Bool": {
+                    "kms:GrantIsForAWSResource": "true"
+                }
+            }
+        }
+    ]
+}

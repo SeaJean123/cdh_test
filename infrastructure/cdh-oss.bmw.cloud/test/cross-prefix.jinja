@@ -1,0 +1,31 @@
+# Copyright (C) 2022, Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+{% for region_alias, region_full in regions.items() %}
+
+module "athena-result-bucket_{{ region_alias }}" {
+  source = "{{ base_path }}/modules/athena-result-bucket"
+  providers = {
+    aws = aws.{{ region_alias }}
+  }
+
+  count                = var.resource_name_prefix == "" ? 1 : 0
+  clean_up_all_objects = true
+  bucket_name          = "${local.athena_query_result_bucket_base}-{{ region_full }}"
+}
+
+moved {
+  from = aws_s3_bucket.cdh-core-athena-query-results-{{ region_full }}[0]
+  to   = module.athena-result-bucket_{{ region_alias }}[0].aws_s3_bucket.athena_results
+}
+{% endfor %}

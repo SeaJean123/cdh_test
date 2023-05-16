@@ -1,0 +1,12 @@
+aws-requests-auth
+aws-xray-sdk >= 2.8.0  # https://github.com/aws/aws-xray-sdk-python/issues/283
+boto3
+botocore
+dataclasses_json
+marshmallow
+marshmallow-dataclass
+pyyaml
+requests
+typing-inspect==0.7.1  # 0.8.0 currently incompatible with marshmallow dataclasses
+waiting
+orjson

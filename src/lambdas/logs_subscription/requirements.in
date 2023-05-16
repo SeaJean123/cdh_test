@@ -1,0 +1,5 @@
+-c ../../requirements.txt
+
+boto3
+python-dateutil
+aws-lambda-typing
