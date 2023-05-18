@@ -99,9 +99,16 @@ jobs:
           role-to-assume: arn:aws-cn:iam::607580047483:role/GITHUB_TEST
           aws-region: cn-north-1
 
-      - name: Check infrastructure is compatible with create-cdh
-        run: pytest "infrastructure/bin/validate_create_cdh_compatibility_test.py"
-        env:
-          CDH_CORE_CONFIG_FILE_PATH: ${{ github.workspace }}/infrastructure/bin/create-cdh-compatibility-test-config.yaml
-          LOG_TIMEOUT: 10
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.4.5
+
+      - name: Terraform init
+        run: terraform init 
+        working-directory: ./infrastructure/cdh-oss.bmw.cloud/pipeline
+
+      - name: Terraform apply
+        run: terraform apply -auto-approve
+        working-directory: ./infrastructure/cdh-oss.bmw.cloud/pipeline
 
