@@ -99,19 +99,19 @@ jobs:
           role-to-assume: arn:aws-cn:iam::607580047483:role/GITHUB_TEST
           aws-region: cn-north-1
 
-      - name: Check infrastructure is compatible with create-cdh
-        run: pytest "infrastructure/bin/validate_create_cdh_compatibility_test.py"
-        env:
-          CDH_CORE_CONFIG_FILE_PATH: ${{ github.workspace }}/infrastructure/bin/create-cdh-compatibility-test-config.yaml
-          LOG_TIMEOUT: 10
-#
-#  security_deployment:
-#    needs: [set_prefix, check_infrastructure]
-#    uses: ./.github/workflows/reusable_deployment.yml
-#    if: (needs.set_prefix.outputs.prefix == '') && (needs.check_infrastructure.result == 'success')
-#    with:
-#      environment: prod
-#      purposes: '["security"]'
+#      - name: Check infrastructure is compatible with create-cdh
+#        run: pytest "infrastructure/bin/validate_create_cdh_compatibility_test.py"
+#        env:
+#          CDH_CORE_CONFIG_FILE_PATH: ${{ github.workspace }}/infrastructure/bin/create-cdh-compatibility-test-config.yaml
+#          LOG_TIMEOUT: 10
+
+  security_deployment:
+    needs: [set_prefix, check_infrastructure]
+    uses: ./.github/workflows/reusable_deployment.yml
+    if: (needs.set_prefix.outputs.prefix == '') && (needs.check_infrastructure.result == 'success')
+    with:
+      environment: prod
+      purposes: '["security"]'
 #
 #  dev_deployment:
 #    needs: [set_prefix, check_infrastructure, security_deployment]
@@ -146,4 +146,4 @@ jobs:
 #      environment: dev
 #      base_url: https://${{ needs.set_prefix.outputs.prefix == '' && 'api-dev.cdh-oss.bmw.cloud/' || format('{0}.api-dev.cdh-oss.bmw.cloud/', needs.set_prefix.outputs.prefix)}}
 #      prefix: ${{ needs.set_prefix.outputs.prefix }}
-#
+
