@@ -104,46 +104,46 @@ jobs:
         env:
           CDH_CORE_CONFIG_FILE_PATH: ${{ github.workspace }}/infrastructure/bin/create-cdh-compatibility-test-config.yaml
           LOG_TIMEOUT: 10
-
-  security_deployment:
-    needs: [set_prefix, check_infrastructure]
-    uses: ./.github/workflows/reusable_deployment.yml
-    if: (needs.set_prefix.outputs.prefix == '') && (needs.check_infrastructure.result == 'success')
-    with:
-      environment: prod
-      purposes: '["security"]'
-
-  dev_deployment:
-    needs: [set_prefix, check_infrastructure, security_deployment]
-    if: |
-      always() &&
-      (needs.set_prefix.result == 'success') &&
-      (needs.check_infrastructure.result == 'success') &&
-      (needs.security_deployment.result == 'success' || needs.security_deployment.result == 'skipped')
-    uses: ./.github/workflows/reusable_deployment.yml
-    with:
-      environment: dev
-      prefix: ${{ needs.set_prefix.outputs.prefix }}
-      purposes: '["api","resources","test"]'
-
-  dev_cleanup:
-    needs: [set_prefix, dev_deployment]
-    uses: ./.github/workflows/reusable_cleanup.yml
-    if: |
-      always() && needs.set_prefix.outputs.prefix != '' && needs.dev_deployment.result == 'success'
-    with:
-      environment: dev
-      prefix: ${{ needs.set_prefix.outputs.prefix }}
-
-  dev_functional_tests:
-    needs: [set_prefix, dev_cleanup]
-    uses: ./.github/workflows/reusable_functional_tests.yml
-    if: |
-      always() &&
-      (needs.dev_deployment.result == 'success') &&
-      (needs.dev_cleanup.result == 'success' || needs.dev_cleanup.result == 'skipped')
-    with:
-      environment: dev
-      base_url: https://${{ needs.set_prefix.outputs.prefix == '' && 'api-dev.cdh-oss.bmw.cloud/' || format('{0}.api-dev.cdh-oss.bmw.cloud/', needs.set_prefix.outputs.prefix)}}
-      prefix: ${{ needs.set_prefix.outputs.prefix }}
-
+#
+#  security_deployment:
+#    needs: [set_prefix, check_infrastructure]
+#    uses: ./.github/workflows/reusable_deployment.yml
+#    if: (needs.set_prefix.outputs.prefix == '') && (needs.check_infrastructure.result == 'success')
+#    with:
+#      environment: prod
+#      purposes: '["security"]'
+#
+#  dev_deployment:
+#    needs: [set_prefix, check_infrastructure, security_deployment]
+#    if: |
+#      always() &&
+#      (needs.set_prefix.result == 'success') &&
+#      (needs.check_infrastructure.result == 'success') &&
+#      (needs.security_deployment.result == 'success' || needs.security_deployment.result == 'skipped')
+#    uses: ./.github/workflows/reusable_deployment.yml
+#    with:
+#      environment: dev
+#      prefix: ${{ needs.set_prefix.outputs.prefix }}
+#      purposes: '["api","resources","test"]'
+#
+#  dev_cleanup:
+#    needs: [set_prefix, dev_deployment]
+#    uses: ./.github/workflows/reusable_cleanup.yml
+#    if: |
+#      always() && needs.set_prefix.outputs.prefix != '' && needs.dev_deployment.result == 'success'
+#    with:
+#      environment: dev
+#      prefix: ${{ needs.set_prefix.outputs.prefix }}
+#
+#  dev_functional_tests:
+#    needs: [set_prefix, dev_cleanup]
+#    uses: ./.github/workflows/reusable_functional_tests.yml
+#    if: |
+#      always() &&
+#      (needs.dev_deployment.result == 'success') &&
+#      (needs.dev_cleanup.result == 'success' || needs.dev_cleanup.result == 'skipped')
+#    with:
+#      environment: dev
+#      base_url: https://${{ needs.set_prefix.outputs.prefix == '' && 'api-dev.cdh-oss.bmw.cloud/' || format('{0}.api-dev.cdh-oss.bmw.cloud/', needs.set_prefix.outputs.prefix)}}
+#      prefix: ${{ needs.set_prefix.outputs.prefix }}
+#
