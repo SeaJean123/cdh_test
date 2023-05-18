@@ -6,7 +6,8 @@ on:
     branches:
       - main
       - prefix/*
-
+      - dev
+      
 jobs:
   set_prefix:
     runs-on: ubuntu-latest
