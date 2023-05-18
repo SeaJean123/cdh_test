@@ -48,42 +48,42 @@ jobs:
           ENVIRONMENT: ${{ inputs.environment }}
           PURPOSES: ${{ inputs.purposes }}
 
-#  deployment:
-#    needs: list-purpose-account-tuples
-#    runs-on: ubuntu-latest
-#    env:
-#      TF_IN_AUTOMATION: true
-#      TF_INPUT: false
-#    permissions:
-#      id-token: write
-#      contents: read
-#    outputs:
-#      job_status: ${{ job.status }}
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        purpose-accounts: ${{ fromJson(needs.list-purpose-account-tuples.outputs.matrix) }}
-#    steps:
-#      - uses: actions/checkout@v3
-#
-#      - name: Setup Python
-#        uses: actions/setup-python@v4
-#        with:
-#          python-version: '3.9'
-#
-#      - name: Set up Docker Buildx
-#        uses: docker/setup-buildx-action@v2
-#        with:
-#          version: v0.10.2
-#
-#      - uses: syphar/restore-virtualenv@v1
-#        id: cache-virtualenv
-#        with:
-#          custom_cache_key_element: ${{ github.sha }}
-#
-#      - name: Set Config file env var
-#        run: echo "CDH_CORE_CONFIG_FILE_PATH=${GITHUB_WORKSPACE}/infrastructure/cdh-oss.bmw.cloud/cdh-core-config-test-deployment.yaml" >> $GITHUB_ENV
-#
+  deployment:
+    needs: list-purpose-account-tuples
+    runs-on: ubuntu-latest
+    env:
+      TF_IN_AUTOMATION: true
+      TF_INPUT: false
+    permissions:
+      id-token: write
+      contents: read
+    outputs:
+      job_status: ${{ job.status }}
+    strategy:
+      fail-fast: false
+      matrix:
+        purpose-accounts: ${{ fromJson(needs.list-purpose-account-tuples.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          version: v0.10.2
+
+      - uses: syphar/restore-virtualenv@v1
+        id: cache-virtualenv
+        with:
+          custom_cache_key_element: ${{ github.sha }}
+
+      - name: Set Config file env var
+        run: echo "CDH_CORE_CONFIG_FILE_PATH=${GITHUB_WORKSPACE}/infrastructure/cdh-oss.bmw.cloud/cdh-core-config-test-deployment.yaml" >> $GITHUB_ENV
+
 #      - name: Configure AWS credentials
 #        id: aws_credentials
 #        uses: aws-actions/configure-aws-credentials@v1-node16  # https://github.com/aws-actions/configure-aws-credentials/issues/489
