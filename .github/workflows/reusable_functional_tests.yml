@@ -1,0 +1,74 @@
+---
+name: Reusable functional tests workflow
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      prefix:
+        required: false
+        default: ''
+        type: string
+      base_url:
+        required: true
+        type: string
+    outputs:
+      job_status:
+        value: ${{ jobs.pytest.outputs.job_status }}
+
+env:
+  AWS_PARTITION: aws
+  AWS_REGION: eu-west-1
+  BASE_URL: ${{ inputs.base_url }}
+  ENVIRONMENT: ${{ inputs.environment }}
+  RESOURCE_NAME_PREFIX: ${{ inputs.prefix }}
+
+jobs:
+  pytest:
+    runs-on: [self-hosted, ubuntu-latest]
+    permissions:
+      id-token: write
+      contents: read
+    outputs:
+      job_status: ${{ job.status }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - uses: syphar/restore-virtualenv@v1
+        id: cache-virtualenv
+        with:
+          custom_cache_key_element: ${{ github.sha }}
+
+      - name: Set Config file env var
+        run: echo "CDH_CORE_CONFIG_FILE_PATH=${GITHUB_WORKSPACE}/infrastructure/cdh-oss.bmw.cloud/cdh-core-config-test-deployment.yaml" >> $GITHUB_ENV
+
+      - name: Get test account
+        id: get-test-account
+        # Note that this is a randomly chosen test account
+        run: |
+          accounts=$(python infrastructure/bin/get_purpose_account_tuples.py)
+          account=$(echo $accounts | jq -r '.[0].account')
+          echo "test-account=$account" >> $GITHUB_OUTPUT
+        env:
+          PURPOSES: '["test"]'
+
+      - name: Configure AWS credentials
+        id: aws_credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16  # https://github.com/aws-actions/configure-aws-credentials/issues/489
+        with:
+          role-to-assume: arn:aws:iam::${{ steps.get-test-account.outputs.test-account }}:role/cdh-deployer
+          aws-region: eu-west-1
+
+      - name: Execute functional tests
+        run: python -m cdh_applications.functional_tests
+        env:
+          CLEANUP_PREFIX_DEPLOYMENT: ${{ inputs.prefix != '' }}
+          CONTAINS_TEST_DATA: ${{ inputs.prefix == '' }}
+          IS_INTEGRATED_DEPLOYMENT: ${{ inputs.prefix == '' }}
