@@ -10,7 +10,7 @@ on:
 
 jobs:
   create_virtualenv:
-    runs-on: [self-hosted, ubuntu-latest]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
@@ -44,7 +44,7 @@ jobs:
   list-purpose-account-tuples:
     needs: [cleanup, create_virtualenv]
     if: needs.create_virtualenv.result == 'success'
-    runs-on: [self-hosted, ubuntu-latest]
+    runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
@@ -74,7 +74,7 @@ jobs:
 
   destroy:
     needs: list-purpose-account-tuples
-    runs-on: [self-hosted, ubuntu-latest]
+    runs-on: ubuntu-latest
     env:
       TF_IN_AUTOMATION: true
       TF_INPUT: false
@@ -107,8 +107,8 @@ jobs:
         id: aws_credentials
         uses: aws-actions/configure-aws-credentials@v1-node16  # https://github.com/aws-actions/configure-aws-credentials/issues/489
         with:
-          role-to-assume: arn:aws:iam::${{ matrix.purpose-accounts.account }}:role/cdh-deployer
-          aws-region: eu-west-1
+          role-to-assume: arn:aws-cn:iam::607580047483:role/GITHUB_TEST
+          aws-region: cn-north-1
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2

@@ -21,7 +21,7 @@ env:
 
 jobs:
   list-purpose-account-tuples:
-    runs-on: [self-hosted, ubuntu-latest]
+    runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
@@ -50,7 +50,7 @@ jobs:
 
   cleanup:
     needs: list-purpose-account-tuples
-    runs-on: [self-hosted, ubuntu-latest]
+    runs-on: ubuntu-latest
     permissions:
       id-token: write
       contents: read
@@ -80,8 +80,8 @@ jobs:
         id: aws_credentials
         uses: aws-actions/configure-aws-credentials@v1-node16  # https://github.com/aws-actions/configure-aws-credentials/issues/489
         with:
-          role-to-assume: arn:aws:iam::${{ matrix.purpose-accounts.account }}:role/cdh-deployer
-          aws-region: eu-west-1
+          role-to-assume: arn:aws-cn:iam::607580047483:role/GITHUB_TEST
+          aws-region: cn-north-1
 
       - name: Perform cleanup
         run: |

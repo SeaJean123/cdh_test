@@ -15,7 +15,7 @@ on:
 
 jobs:
   notify-teams:
-    runs-on: [self-hosted, ubuntu-latest]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 

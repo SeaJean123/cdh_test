@@ -4,10 +4,10 @@ name: Deployment
 on:
   push:
     branches:
-      - main
-      - prefix/*
+#      - main
+#      - prefix/*
       - dev
-      
+
 jobs:
   set_prefix:
     runs-on: ubuntu-latest
@@ -99,16 +99,51 @@ jobs:
           role-to-assume: arn:aws-cn:iam::607580047483:role/GITHUB_TEST
           aws-region: cn-north-1
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.4.5
+      - name: Check infrastructure is compatible with create-cdh
+        run: pytest "infrastructure/bin/validate_create_cdh_compatibility_test.py"
+        env:
+          CDH_CORE_CONFIG_FILE_PATH: ${{ github.workspace }}/infrastructure/bin/create-cdh-compatibility-test-config.yaml
+          LOG_TIMEOUT: 10
 
-      - name: Terraform init
-        run: terraform init 
-        working-directory: ./infrastructure/cdh-oss.bmw.cloud/pipeline
+  security_deployment:
+    needs: [set_prefix, check_infrastructure]
+    uses: ./.github/workflows/reusable_deployment.yml
+    if: (needs.set_prefix.outputs.prefix == '') && (needs.check_infrastructure.result == 'success')
+    with:
+      environment: prod
+      purposes: '["security"]'
 
-      - name: Terraform apply
-        run: terraform apply -auto-approve
-        working-directory: ./infrastructure/cdh-oss.bmw.cloud/pipeline
+  dev_deployment:
+    needs: [set_prefix, check_infrastructure, security_deployment]
+    if: |
+      always() &&
+      (needs.set_prefix.result == 'success') &&
+      (needs.check_infrastructure.result == 'success') &&
+      (needs.security_deployment.result == 'success' || needs.security_deployment.result == 'skipped')
+    uses: ./.github/workflows/reusable_deployment.yml
+    with:
+      environment: dev
+      prefix: ${{ needs.set_prefix.outputs.prefix }}
+      purposes: '["api","resources","test"]'
+
+  dev_cleanup:
+    needs: [set_prefix, dev_deployment]
+    uses: ./.github/workflows/reusable_cleanup.yml
+    if: |
+      always() && needs.set_prefix.outputs.prefix != '' && needs.dev_deployment.result == 'success'
+    with:
+      environment: dev
+      prefix: ${{ needs.set_prefix.outputs.prefix }}
+
+  dev_functional_tests:
+    needs: [set_prefix, dev_cleanup]
+    uses: ./.github/workflows/reusable_functional_tests.yml
+    if: |
+      always() &&
+      (needs.dev_deployment.result == 'success') &&
+      (needs.dev_cleanup.result == 'success' || needs.dev_cleanup.result == 'skipped')
+    with:
+      environment: dev
+      base_url: https://${{ needs.set_prefix.outputs.prefix == '' && 'api-dev.cdh-oss.bmw.cloud/' || format('{0}.api-dev.cdh-oss.bmw.cloud/', needs.set_prefix.outputs.prefix)}}
+      prefix: ${{ needs.set_prefix.outputs.prefix }}
 

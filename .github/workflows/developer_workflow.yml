@@ -14,7 +14,7 @@ on:
 
 jobs:
   greet:
-    runs-on: [self-hosted, ubuntu-latest]
+    runs-on: ubuntu-latest
     outputs:
       job-status: ${{ job.status }}
     steps:
