@@ -107,6 +107,9 @@ jobs:
 
   security_deployment:
     needs: [set_prefix, check_infrastructure]
+    permissions:
+      id-token: write
+      contents: read
     uses: ./.github/workflows/reusable_deployment.yml
     if: (needs.set_prefix.outputs.prefix == '') && (needs.check_infrastructure.result == 'success')
     with:
