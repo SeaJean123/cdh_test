@@ -52,7 +52,7 @@ jobs:
   check_infrastructure:
     needs: create_virtualenv
     if: needs.create_virtualenv.result == 'success'
-    runs-on: [self-hosted, ubuntu-latest]
+    runs-on: ubuntu-latest
     permissions:
       id-token: write
       contents: read
