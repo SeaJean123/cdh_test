@@ -139,15 +139,11 @@ jobs:
 #      prefix: ${{ needs.set_prefix.outputs.prefix }}
 #
   dev_functional_tests:
-    needs: [set_prefix, dev_cleanup]
+    needs: [set_prefix]
     uses: ./.github/workflows/reusable_functional_tests.yml
     permissions:
       id-token: write
       contents: read
-    if: |
-      always() &&
-      (needs.dev_deployment.result == 'success') &&
-      (needs.dev_cleanup.result == 'success' || needs.dev_cleanup.result == 'skipped')
     with:
       environment: dev
       base_url: https://${{ needs.set_prefix.outputs.prefix == '' && 'api-dev.cdh-oss.bmw.cloud/' || format('{0}.api-dev.cdh-oss.bmw.cloud/', needs.set_prefix.outputs.prefix)}}
