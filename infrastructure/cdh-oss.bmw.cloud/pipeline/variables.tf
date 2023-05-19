@@ -14,6 +14,6 @@
 
 variable "resource_name_prefix" {
   type = string
-  default = "test-1111222"
+  default = "test-1111222333"
 }
 
