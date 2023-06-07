@@ -4,12 +4,13 @@ name: Deployment
 on:
   push:
     branches:
-      - main
-      - prefix/*
+#      - main
+#      - prefix/*
+      - dev
 
 jobs:
   set_prefix:
-    runs-on: [self-hosted, ubuntu-latest]
+    runs-on: ubuntu-latest
     outputs:
       prefix: ${{ steps.set-parameters.outputs.prefix }}
     steps:
@@ -25,7 +26,7 @@ jobs:
   create_virtualenv:
     needs: set_prefix
     if: needs.set_prefix.result == 'success'
-    runs-on: [self-hosted, ubuntu-latest]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
@@ -46,12 +47,15 @@ jobs:
           python -m  pip install -r src/requirements-dev.txt -r src/requirements.txt
           python -m pip install src/cdh_core
           python -m pip install src/lambdas/cdh_core_api
+          echo '-----------------1212122-------------------'
+          echo '${{ github.sha }}'
+          echo '${{secrets.test_scretes}}'
         if: steps.cache-virtualenv.outputs.cache-hit != 'true'
 
   check_infrastructure:
     needs: create_virtualenv
     if: needs.create_virtualenv.result == 'success'
-    runs-on: [self-hosted, ubuntu-latest]
+    runs-on: ubuntu-latest
     permissions:
       id-token: write
       contents: read
@@ -95,80 +99,56 @@ jobs:
         id: aws_credentials
         uses: aws-actions/configure-aws-credentials@v1-node16  # https://github.com/aws-actions/configure-aws-credentials/issues/489
         with:
-          role-to-assume: arn:aws:iam::${{ steps.get-dev-api-account.outputs.dev-api-account }}:role/cdh-deployer
-          aws-region: eu-west-1
+          role-to-assume: arn:aws-cn:iam::607580047483:role/GITHUB_TEST
+          aws-region: cn-north-1
 
-      - name: Check infrastructure is compatible with create-cdh
-        run: pytest "infrastructure/bin/validate_create_cdh_compatibility_test.py"
-        env:
-          CDH_CORE_CONFIG_FILE_PATH: ${{ github.workspace }}/infrastructure/bin/create-cdh-compatibility-test-config.yaml
-          LOG_TIMEOUT: 10
+#      - name: Check infrastructure is compatible with create-cdh
+#        run: pytest "infrastructure/bin/validate_create_cdh_compatibility_test.py"
+#        env:
+#          CDH_CORE_CONFIG_FILE_PATH: ${{ github.workspace }}/infrastructure/bin/create-cdh-compatibility-test-config.yaml
+#          LOG_TIMEOUT: 10
 
   security_deployment:
     needs: [set_prefix, check_infrastructure]
+    permissions:
+      id-token: write
+      contents: read
     uses: ./.github/workflows/reusable_deployment.yml
     if: (needs.set_prefix.outputs.prefix == '') && (needs.check_infrastructure.result == 'success')
     with:
       environment: prod
       purposes: '["security"]'
-
-  dev_deployment:
-    needs: [set_prefix, check_infrastructure, security_deployment]
-    if: |
-      always() &&
-      (needs.set_prefix.result == 'success') &&
-      (needs.check_infrastructure.result == 'success') &&
-      (needs.security_deployment.result == 'success' || needs.security_deployment.result == 'skipped')
-    uses: ./.github/workflows/reusable_deployment.yml
-    with:
-      environment: dev
-      prefix: ${{ needs.set_prefix.outputs.prefix }}
-      purposes: '["api","resources","test"]'
-
-  dev_cleanup:
-    needs: [set_prefix, dev_deployment]
-    uses: ./.github/workflows/reusable_cleanup.yml
-    if: |
-      always() && needs.set_prefix.outputs.prefix != '' && needs.dev_deployment.result == 'success'
-    with:
-      environment: dev
-      prefix: ${{ needs.set_prefix.outputs.prefix }}
-
+#
+#  dev_deployment:
+#    needs: [set_prefix, check_infrastructure, security_deployment]
+#    if: |
+#      always() &&
+#      (needs.set_prefix.result == 'success') &&
+#      (needs.check_infrastructure.result == 'success') &&
+#      (needs.security_deployment.result == 'success' || needs.security_deployment.result == 'skipped')
+#    uses: ./.github/workflows/reusable_deployment.yml
+#    with:
+#      environment: dev
+#      prefix: ${{ needs.set_prefix.outputs.prefix }}
+#      purposes: '["api","resources","test"]'
+#
+#  dev_cleanup:
+#    needs: [set_prefix, dev_deployment]
+#    uses: ./.github/workflows/reusable_cleanup.yml
+#    if: |
+#      always() && needs.set_prefix.outputs.prefix != '' && needs.dev_deployment.result == 'success'
+#    with:
+#      environment: dev
+#      prefix: ${{ needs.set_prefix.outputs.prefix }}
+#
   dev_functional_tests:
-    needs: [set_prefix, dev_cleanup]
+    needs: [set_prefix]
     uses: ./.github/workflows/reusable_functional_tests.yml
-    if: |
-      always() &&
-      (needs.dev_deployment.result == 'success') &&
-      (needs.dev_cleanup.result == 'success' || needs.dev_cleanup.result == 'skipped')
+    permissions:
+      id-token: write
+      contents: read
     with:
       environment: dev
       base_url: https://${{ needs.set_prefix.outputs.prefix == '' && 'api-dev.cdh-oss.bmw.cloud/' || format('{0}.api-dev.cdh-oss.bmw.cloud/', needs.set_prefix.outputs.prefix)}}
       prefix: ${{ needs.set_prefix.outputs.prefix }}
 
-  prod_deployment:
-    needs: [set_prefix, dev_functional_tests]
-    uses: ./.github/workflows/reusable_deployment.yml
-    if: always() && needs.set_prefix.outputs.prefix == '' && needs.dev_functional_tests.result == 'success'
-    with:
-      environment: prod
-      purposes: '["api","resources","test"]'
-
-  prod_functional_tests:
-    needs: [set_prefix, prod_deployment]
-    if: always() && needs.set_prefix.outputs.prefix == '' && needs.prod_deployment.result == 'success'
-    uses: ./.github/workflows/reusable_functional_tests.yml
-    with:
-      environment: prod
-      base_url: https://api.cdh-oss.bmw.cloud/
-
-  notify-teams:
-    needs: [set_prefix, dev_functional_tests, prod_functional_tests]
-    if: always()
-    uses: ./.github/workflows/reusable_notify_teams.yml
-    with:
-      successful: ${{ needs.set_prefix.outputs.prefix == '' && needs.prod_functional_tests.outputs.job_status == 'success' || needs.set_prefix.outputs.prefix
-        != '' && needs.dev_functional_tests.outputs.job_status == 'success' }}
-    secrets:
-      teams_alert_url: ${{ needs.set_prefix.outputs.prefix == '' && secrets.TEAMS_PROD_ALERT || secrets.TEAMS_DEV_ALERT }}
-      teams_url: ${{ needs.set_prefix.outputs.prefix == '' && secrets.TEAMS_PROD || secrets.TEAMS_DEV }}

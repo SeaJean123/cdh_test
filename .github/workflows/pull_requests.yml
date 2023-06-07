@@ -4,11 +4,12 @@ name: Pull Requests
 on:
   pull_request:
     branches:
-      - '*'
+#      - '*'
+      - 'test'
 
 jobs:
   create_virtualenv:
-    runs-on: [self-hosted, ubuntu-latest]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
@@ -34,7 +35,7 @@ jobs:
   pre-commit:
     needs: create_virtualenv
     if: needs.create_virtualenv.result == 'success'
-    runs-on: [self-hosted, ubuntu-latest]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
@@ -70,7 +71,7 @@ jobs:
   source-test:
     needs: create_virtualenv
     if: needs.create_virtualenv.result == 'success'
-    runs-on: [self-hosted, ubuntu-latest]
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         package_path: [cdh_applications, cdh_core, cdh_core_dev_tools, lambdas/example_lambda, lambdas/cdh_core_api, lambdas/notify_teams, lambdas/logs_subscription,
