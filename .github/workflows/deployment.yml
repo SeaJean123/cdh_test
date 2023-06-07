@@ -47,8 +47,9 @@ jobs:
           python -m  pip install -r src/requirements-dev.txt -r src/requirements.txt
           python -m pip install src/cdh_core
           python -m pip install src/lambdas/cdh_core_api
-          echo '------------------------------------'
-          echo ${{secrets.test_scretes}}
+          echo '-----------------1212122-------------------'
+          echo '${{ github.sha }}'
+          echo '${{secrets.test_scretes}}'
         if: steps.cache-virtualenv.outputs.cache-hit != 'true'
 
   check_infrastructure:
